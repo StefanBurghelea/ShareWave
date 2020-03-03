@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="color50">#E1F5FE</color>
+    <color name="color100">#b3e5fc</color>
+    <color name="color200">#81d4fa</color>
+    <color name="color300">#4fc3f7</color>
+    <color name="color400">#29b6f6</color>
+    <color name="color500">#03a9f4</color>
+    <color name="color600">#039be5</color>
+    <color name="color900">#01579b</color>
+</resources>
