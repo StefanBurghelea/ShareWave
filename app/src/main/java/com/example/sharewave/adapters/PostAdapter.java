@@ -1,6 +1,7 @@
 package com.example.sharewave.adapters;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,10 +9,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sharewave.R;
 import com.example.sharewave.classes.Post;
+import com.example.sharewave.ui.single.SingleFragment;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -40,16 +43,34 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PostAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull PostAdapter.MyViewHolder holder, final int position) {
 
         Post post = postsList.get(position);
 
         holder.txtBeach_Name.setText(post.getBeach_name());
-        holder.txtCaption.setText(post.getCaption());
+        holder.txtCaption.setText(post.getCreated_at());
         holder.txtRating.setText(post.getRating());
-        holder.txtLocation.setText(post.getLocation());
+        holder.txtLocation.setText(post.getLocation_name());
 
         Picasso.get().load(post.getPath()).placeholder(R.drawable.loading).fit().into(holder.imgPost);
+
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Bundle bundle= new Bundle();
+                bundle.putInt("id", postsList.get(position).getId());
+                bundle.putString("beach", postsList.get(position).getBeach_name());
+                bundle.putString("location", postsList.get(position).getLocation_name());
+
+                AppCompatActivity activity = (AppCompatActivity) view.getContext();
+                SingleFragment myFragment = new SingleFragment();
+                myFragment.setArguments(bundle);
+                activity.getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, myFragment).addToBackStack(null).commit();
+
+            }
+        });
     }
 
     @Override

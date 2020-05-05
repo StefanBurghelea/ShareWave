@@ -2,6 +2,7 @@ package com.example.sharewave.ui.home;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,12 +22,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.sharewave.R;
 import com.example.sharewave.adapters.LocationAdapter;
 import com.example.sharewave.adapters.PostAdapter;
 import com.example.sharewave.classes.Location;
 import com.example.sharewave.classes.Post;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,15 +48,15 @@ public class HomeFragment extends Fragment implements SearchView.OnQueryTextList
     LocationAdapter adapterLocation;
     ArrayList<Location> locationArrayList = new ArrayList<>();
     RequestQueue requestQueueLocations;
-    String urlLocations= "http://192.168.30.101:8000/api/locations/";
-
+    String urlLocations= "http://192.168.1.156:8000/api/locations/";
 
     //posts
     RecyclerView recyclerView;
     List<Post> postList;
     private String jsonResponse;
     RequestQueue requestQueue;
-    String urlJsonArry = "http://192.168.30.101:8000/api/posts/";
+    String urlJsonArry = "http://192.168.1.156:8000/api/posts/";
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -68,12 +71,23 @@ public class HomeFragment extends Fragment implements SearchView.OnQueryTextList
         locationArrayList = new ArrayList<>();
 
         makeJsonArrayRequestLocation();
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         adapterLocation = new LocationAdapter(getContext(), locationArrayList);
 
         list.setAdapter(adapterLocation);
 
+        editsearch.setFocusable(false);
+        editsearch.setIconified(false);
+        editsearch.clearFocus();
+
         editsearch.setOnQueryTextListener(this);
+
+
 
 
         //posts
@@ -88,22 +102,29 @@ public class HomeFragment extends Fragment implements SearchView.OnQueryTextList
         postList.add(
                 new Post(
                         1,
-                        "Baleal",
-                        "4",
-                        "dedeede",
                         "https://postadmin.s3.eu-west-3.amazonaws.com/Screenshot_2019-12-20-18-25-22-210_com.instagram.android.jpg",
+                        "Muito Bom",
+                        "3",
+                        "340",
+                        "1",
+                        "11",
+                        "2020-03-20",
+                        "Baleal",
                         "Peniche"
                         )
         );
         postList.add(
                 new Post(
-                        2,
-                        "SuperTubos",
-                        "4",
-                        "dededadsadasdasasdede",
+                        1,
                         "https://postadmin.s3.eu-west-3.amazonaws.com/Screenshot_2019-12-20-18-25-22-210_com.instagram.android.jpg",
+                        "Muito Bom",
+                        "3",
+                        "340",
+                        "3",
+                        "11",
+                        "2020-03-20",
+                        "Baleal",
                         "Peniche"
-
                 )
         );
 
@@ -184,6 +205,8 @@ public class HomeFragment extends Fragment implements SearchView.OnQueryTextList
                     public void onResponse(JSONArray response) {
 
                         try {
+
+
                             // Parsing json array response
                             // loop through each json object
 
@@ -203,14 +226,21 @@ public class HomeFragment extends Fragment implements SearchView.OnQueryTextList
                                 String id_location = person.getString("id_location");
                                 String created_at = person.getString("created_at");
 
+                                String beeeaaccchh = locationArrayList.get(Integer.parseInt(id_location)).getBeach_name();
+                                String locationn = locationArrayList.get(Integer.parseInt(id_location)).getLocation_name();
+
                                 postList.add(
                                         new Post(
                                                 id,
-                                                created_at,
-                                                rating,
-                                                caption,
                                                 path,
-                                                id_location
+                                                caption,
+                                                rating,
+                                                image_size,
+                                                id_location,
+                                                id_user,
+                                                created_at,
+                                                beeeaaccchh,
+                                                locationn
                                         )
                                 );
 
@@ -224,6 +254,7 @@ public class HomeFragment extends Fragment implements SearchView.OnQueryTextList
                         }
 
                     }
+
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {

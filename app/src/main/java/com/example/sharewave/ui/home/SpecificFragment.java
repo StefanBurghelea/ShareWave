@@ -2,6 +2,7 @@ package com.example.sharewave.ui.home;
 
 import androidx.lifecycle.ViewModelProviders;
 
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,16 +33,20 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class SpecificFragment extends Fragment {
 
     private SpecificViewModel mViewModel;
-    TextView txtId,txtBeachName,txtLocationName;
-    RecyclerView recyclerView;
-    List<Post> postList;
+    private TextView txtId,txtBeachName,txtLocationName;
+    private RecyclerView recyclerView;
+    public List<Post> postList;
+    PostAdapter adapter;
     private String jsonResponse;
-    RequestQueue requestQueue;
+    private RequestQueue requestQueue;
+    String beach_name,location_name;
+
 
     public static SpecificFragment newInstance() {
         return new SpecificFragment();
@@ -53,14 +59,16 @@ public class SpecificFragment extends Fragment {
 
         Bundle arguments = getArguments();
         int id = arguments.getInt("id");
-        String beach_name = arguments.getString("beach_name");
-        String location_name = arguments.getString("location_name");
+        beach_name = arguments.getString("beach_name");
+        location_name = arguments.getString("location_name");
 
         declarar(root);
 
         txtBeachName.setText(beach_name);
         txtLocationName.setText(location_name);
 
+
+        //post
         requestQueue = Volley.newRequestQueue(getContext());
 
         recyclerView.setHasFixedSize(true);
@@ -68,18 +76,21 @@ public class SpecificFragment extends Fragment {
 
         postList = new ArrayList<>();
 
-        makeJsonArrayRequest(id);
 
-        PostAdapter adapter = new PostAdapter(getContext(),postList);
+        makeJsonArrayRequest(id, postList);
+
+        adapter = new PostAdapter(getContext(),postList);
 
         recyclerView.setAdapter(adapter);
 
         return root;
     }
 
-    private void makeJsonArrayRequest(int id) {
+    private void makeJsonArrayRequest(int id, final List<Post> postList) {
 
-        String urlJsonArry = "http://192.168.30.101:8000/api/posts/location/"+id;
+        String urlJsonArry = "http://192.168.1.156:8000/api/posts/location/"+id;
+
+        Toast.makeText(getContext(),String.valueOf(id),Toast.LENGTH_LONG).show();
 
         JsonArrayRequest req = new JsonArrayRequest(urlJsonArry,
                 new Response.Listener<JSONArray>() {
@@ -87,8 +98,6 @@ public class SpecificFragment extends Fragment {
                     public void onResponse(JSONArray response) {
 
                         try {
-                            // Parsing json array response
-                            // loop through each json object
 
                             jsonResponse = "";
 
@@ -109,14 +118,20 @@ public class SpecificFragment extends Fragment {
                                 postList.add(
                                         new Post(
                                                 id,
-                                                created_at,
-                                                rating,
-                                                caption,
                                                 path,
-                                                id_location
+                                                caption,
+                                                rating,
+                                                image_size,
+                                                id_location,
+                                                id_user,
+                                                created_at,
+                                                beach_name,
+                                                location_name
                                         )
                                 );
 
+                                Log.d("entrou","true");
+                                adapter.notifyDataSetChanged();
                             }
 
                         } catch (JSONException e) {

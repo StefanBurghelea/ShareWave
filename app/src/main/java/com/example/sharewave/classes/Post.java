@@ -3,25 +3,31 @@ package com.example.sharewave.classes;
 public class Post {
 
     private int id ;
-    private String beach_name;
-    private String rating;
-    private String caption;
     private String path;
-    private String location;
+    private String caption;
+    private String rating;
+    private String image_size;
+    private String id_location;
+    private String id_user;
+    private String created_at;
+    private String beach_name;
+    private String location_name;
 
     public Post(){
 
     }
 
-
-
-    public Post(int id, String beach_name, String rating, String caption, String path,String location) {
+    public Post(int id, String path, String caption, String rating, String image_size, String id_location, String id_user, String created_at, String beach_name, String location_name) {
         this.id = id;
-        this.beach_name = beach_name;
-        this.rating = rating;
-        this.caption = caption;
         this.path = path;
-        this.location = location;
+        this.caption = caption;
+        this.rating = rating;
+        this.image_size = image_size;
+        this.id_location = id_location;
+        this.id_user = id_user;
+        this.created_at = created_at;
+        this.beach_name = beach_name;
+        this.location_name = location_name;
     }
 
     public int getId() {
@@ -32,12 +38,20 @@ public class Post {
         this.id = id;
     }
 
-    public String getBeach_name() {
-        return beach_name;
+    public String getPath() {
+        return path;
     }
 
-    public void setBeach_name(String beach_name) {
-        this.beach_name = beach_name;
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public String getCaption() {
+        return caption;
+    }
+
+    public void setCaption(String caption) {
+        this.caption = caption;
     }
 
     public String getRating() {
@@ -48,25 +62,51 @@ public class Post {
         this.rating = rating;
     }
 
-    public String getCaption() {
-        return caption;
+    public String getImage_size() {
+        return image_size;
     }
 
-    public void setCaption(String description) {
-        this.caption = description;
+    public void setImage_size(String image_size) {
+        this.image_size = image_size;
     }
 
-    public String getPath() {
-        return path;
+    public String getId_location() {
+        return id_location;
     }
 
-    public void setPath(String path) { this.path = path; }
-
-    public String getLocation() {
-        return location;
+    public void setId_location(String id_location) {
+        this.id_location = id_location;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public String getId_user() {
+        return id_user;
+    }
+
+    public void setId_user(String id_user) {
+        this.id_user = id_user;
+    }
+
+    public String getCreated_at() {
+        return created_at;
+    }
+
+    public void setCreated_at(String created_at) {
+        this.created_at = created_at;
+    }
+
+    public String getBeach_name() {
+        return beach_name;
+    }
+
+    public void setBeach_name(String beach_name) {
+        this.beach_name = beach_name;
+    }
+
+    public String getLocation_name() {
+        return location_name;
+    }
+
+    public void setLocation_name(String location_name) {
+        this.location_name = location_name;
     }
 }

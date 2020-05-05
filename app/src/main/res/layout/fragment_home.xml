@@ -10,7 +10,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:iconifiedByDefault="false"
-        android:queryHint="Find Your Beach!"/>
+        android:queryHint="Find Your Beach!"
+        android:focusableInTouchMode="true"
+        android:focusable="true"
+        android:focusedByDefault="false"/>
 
     <ListView
         android:paddingLeft="30dp"
