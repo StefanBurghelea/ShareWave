@@ -8,4 +8,16 @@
     <color name="color500">#03a9f4</color>
     <color name="color600">#039be5</color>
     <color name="color900">#01579b</color>
+
+    <array name="array_dot_active">
+        <item>@color/color100</item>
+        <item>@color/color100</item>
+        <item>@color/color100</item>
+    </array>
+
+    <array name="array_dot_inactive">
+        <item>@color/color900</item>
+        <item>@color/color900</item>
+        <item>@color/color900</item>
+    </array>
 </resources>
