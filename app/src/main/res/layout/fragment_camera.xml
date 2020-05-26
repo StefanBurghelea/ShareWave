@@ -7,15 +7,18 @@
     android:orientation="vertical">
 
     <EditText
+        android:padding="5dp"
         android:id="@+id/txtSegundos"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Segundos"
+        android:background="@drawable/radiux"
         android:inputType="textPersonName" />
 
     <Button
         android:id="@+id/btnMandar"
+        android:background="@drawable/radiux"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Enviar Segundos" />

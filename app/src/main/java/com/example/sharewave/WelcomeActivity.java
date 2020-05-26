@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.sharewave.auth.AuthActivity;
 import com.example.sharewave.classes.PrefManager;
 
 public class WelcomeActivity extends AppCompatActivity {
@@ -120,7 +121,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
     private void launchHomeScreen() {
         prefManager.setFirstTimeLaunch(false);
-        startActivity(new Intent(WelcomeActivity.this, MainActivity.class));
+        startActivity(new Intent(WelcomeActivity.this, AuthActivity.class));
         finish();
     }
 
