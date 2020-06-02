@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import es.dmoral.toasty.Toasty;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -95,15 +96,20 @@ public class RegisterFragment extends Fragment {
         imgLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                LoginFragment newFragment = new LoginFragment();
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.contents, newFragment);
-                transaction.commit();
+
+                mudarparalogin();
             }
         });
 
         return root;
 
+    }
+
+    private void mudarparalogin() {
+        LoginFragment newFragment = new LoginFragment();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.contents, newFragment);
+        transaction.commit();
     }
 
     private void register(String name, String email, String firstname, String lastname, String password, String repassword) {
@@ -124,9 +130,9 @@ public class RegisterFragment extends Fragment {
                 public void onResponse(String response) {
                     Log.d("VOLLEYNICE", response);
 
+                    Toasty.success(getContext(), "Register completed", Toast.LENGTH_SHORT, true).show();
 
-
-
+                    mudarparalogin();
 
                 }
             }, new Response.ErrorListener() {
@@ -179,5 +185,7 @@ public class RegisterFragment extends Fragment {
         btnRegister = root.findViewById(R.id.btn_register);
         imgLogin = root.findViewById(R.id.loginurl);
     }
+
+
 
 }

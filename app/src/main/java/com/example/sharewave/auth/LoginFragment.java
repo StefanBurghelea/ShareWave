@@ -45,10 +45,14 @@ public class LoginFragment extends Fragment {
     Button btnLogin;
     ImageView btnRegister;
     RequestQueue requestQueue;
+    private DatabaseHelper db;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
 
         if (container != null) {
             container.removeAllViews();
@@ -58,48 +62,68 @@ public class LoginFragment extends Fragment {
 
         declarar(root);
 
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        db = new DatabaseHelper(getContext());
 
-                String email,pass;
+        int login=0;
 
-                email= txtEmail.getText().toString().trim();
-                pass = txtPassword.getText().toString().trim();
+        login = db.usersGuardados();
 
-                requestQueue=Volley.newRequestQueue(getContext());
+        if (login==0){
 
-                if (email.equals("")||email.equals(" ")||email.equals(null)||pass.equals("")||pass.equals(" ")||pass.equals(null)){
+            btnLogin.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-                    Toast.makeText(getContext(),
-                            "Insira algo no email/password",
-                            Toast.LENGTH_LONG).show();
+                    String email,pass;
+
+                    email= txtEmail.getText().toString().trim();
+                    pass = txtPassword.getText().toString().trim();
+
+                    requestQueue=Volley.newRequestQueue(getContext());
+
+                    if (email.equals("")||email.equals(" ")||email.equals(null)||pass.equals("")||pass.equals(" ")||pass.equals(null)){
+
+                        Toast.makeText(getContext(),
+                                "Insira algo no email/password",
+                                Toast.LENGTH_LONG).show();
+
+                    }
+                    else {
+
+                        login(email,pass);
+
+                    }
+
+
 
                 }
-                else {
+            });
 
-                    login(email,pass);
+            btnRegister.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
+                    RegisterFragment newFragment = new RegisterFragment();
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    transaction.replace(R.id.contents, newFragment);
+                    transaction.commit();
                 }
+            });
+        }else {
 
+            mainactitvity();
 
-
-            }
-        });
-
-        btnRegister.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                RegisterFragment newFragment = new RegisterFragment();
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.contents, newFragment);
-                transaction.commit();
-            }
-        });
+        }
 
 
         return root;
+    }
+
+    private void mainactitvity() {
+
+        Intent intent = new Intent(getActivity(), MainActivity.class);
+        startActivity(intent);
+
     }
 
     private void login(final String email,final String pass) {
@@ -124,22 +148,17 @@ public class LoginFragment extends Fragment {
                         String id = userJson.getString("id");
                         String name = userJson.getString("name");
                         String email = userJson.getString("email");
-                        String email_verified_at = userJson.getString("email_verified_at");
                         String firstname = userJson.getString("firstname");
                         String lastname = userJson.getString("lastname");
-                        String privileges = userJson.getString("privileges");
-                        String created_at = userJson.getString("created_at");
 
+                        db.inserirUser(id,name,email,firstname,lastname);
 
-                        Log.d("id",id);Log.d("name",name);Log.d("email",email);Log.d("firstname",firstname);
-
-                        Intent intent = new Intent(getActivity(), MainActivity.class);
-                        startActivity(intent);
 
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
 
+                    mainactitvity();
 
                 }
             }, new Response.ErrorListener() {
@@ -188,4 +207,7 @@ public class LoginFragment extends Fragment {
         btnRegister = root.findViewById(R.id.registerurl);
 
     }
+
+
+
 }

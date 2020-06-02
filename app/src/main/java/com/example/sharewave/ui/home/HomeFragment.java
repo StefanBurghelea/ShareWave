@@ -130,6 +130,11 @@ public class HomeFragment extends Fragment implements SearchView.OnQueryTextList
 
 
         makeJsonArrayRequest();
+        try {
+            Thread.sleep(300);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         PostAdapter adapter = new PostAdapter(getContext(),postList);
 
