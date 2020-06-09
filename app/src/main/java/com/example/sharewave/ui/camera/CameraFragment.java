@@ -1,14 +1,19 @@
 package com.example.sharewave.ui.camera;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,78 +21,54 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import com.example.sharewave.R;
 
+import static android.app.Activity.RESULT_OK;
+
 
 public class CameraFragment extends Fragment {
 
-    EditText txtSegundos;
-    Button btnClick;
+    static final int REQUEST_IMAGE_CAPTURE = 1;
+    ImageView imgNew;
+    RatingBar ratingBar;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragment_camera, container, false);
 
-        txtSegundos = root.findViewById(R.id.txtSegundos);
-        btnClick = root.findViewById(R.id.btnMandar);
+        dispatchTakePictureIntent();
 
-        btnClick.setOnClickListener(new View.OnClickListener() {
+        declarar(root);
+
+        ratingBar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AsyncTaskRunner runner = new AsyncTaskRunner();
-                String sleepTime = txtSegundos.getText().toString();
-                runner.execute(sleepTime);
+                ratingBar.getRating();
             }
         });
-
-
 
         return root;
 
     }
 
-    private class AsyncTaskRunner extends AsyncTask<String, String, String> {
+    private void declarar(View root) {
+        imgNew= root.findViewById(R.id.imgNew);
+        ratingBar=root.findViewById(R.id.ratingBar);
+    }
 
-        private String resp;
-        ProgressDialog progressDialog;
-
-        @Override
-        protected String doInBackground(String... params) {
-            publishProgress("Sleeping..."); // Calls onProgressUpdate()
-            try {
-                int time = Integer.parseInt(params[0])*1000;
-
-                Thread.sleep(time);
-                resp = "Slept for " + params[0] + " seconds";
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                resp = e.getMessage();
-            } catch (Exception e) {
-                e.printStackTrace();
-                resp = e.getMessage();
-            }
-            return resp;
-        }
-
-
-        @Override
-        protected void onPostExecute(String result) {
-            // execution of result of Long time consuming operation
-            progressDialog.dismiss();
-            Toast.makeText(getContext(),"Sucesso"+txtSegundos.getText(),Toast.LENGTH_LONG).show();
-        }
-
-
-        @Override
-        protected void onPreExecute() {
-            progressDialog = ProgressDialog.show(getContext(),
-                    "A Processar",
-                    "Esperar "+txtSegundos.getText().toString()+ " segundos");
-        }
-
-
-        @Override
-        protected void onProgressUpdate(String... text) {
-
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
         }
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            imgNew.setImageBitmap(imageBitmap);
+        }
+    }
+
 }

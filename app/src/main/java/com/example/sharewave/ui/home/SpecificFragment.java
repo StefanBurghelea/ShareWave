@@ -90,7 +90,6 @@ public class SpecificFragment extends Fragment {
 
         String urlJsonArry = "http://192.168.1.156:8000/api/posts/location/"+id;
 
-        Toast.makeText(getContext(),String.valueOf(id),Toast.LENGTH_LONG).show();
 
         JsonArrayRequest req = new JsonArrayRequest(urlJsonArry,
                 new Response.Listener<JSONArray>() {

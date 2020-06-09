@@ -7,7 +7,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,32 +20,39 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.sharewave.R;
 import com.example.sharewave.adapters.CommentAdapter;
+import com.example.sharewave.auth.DatabaseHelper;
 import com.example.sharewave.classes.Comment;
-import com.example.sharewave.classes.Post;
+import com.example.sharewave.classes.User;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SingleFragment extends Fragment {
 
     //comment
-    TextView txtBeach,txtLocation,txtTitle,txtDate,txtRating,txtCaption;
+    TextView txtBeach,txtLocation,txtTitle,txtDate,txtCaption;
+    RatingBar ratingBar;
     ImageView ivPost;
+    EditText comment;
+    ImageButton btnComment;
     private String jsonResponse;
     RequestQueue requestQueue;
 
@@ -50,6 +60,9 @@ public class SingleFragment extends Fragment {
     RecyclerView recyclerView;
     List<Comment> commentList;
     RequestQueue requestQueueComment;
+
+    //postComment
+    RequestQueue requestQueueCommentPost;
 
 
     private SingleViewModel mViewModel;
@@ -64,7 +77,7 @@ public class SingleFragment extends Fragment {
         View root =  inflater.inflate(R.layout.single_fragment, container, false);
 
         Bundle arguments = getArguments();
-        int id = arguments.getInt("id");
+        final int id = arguments.getInt("id");
         String beach  = arguments.getString("beach");
         String location = arguments.getString("location");
 
@@ -84,8 +97,6 @@ public class SingleFragment extends Fragment {
 
         commentList = new ArrayList<>();
 
-
-
         makeJsonArrayRequestComment(id);
         try {
             Thread.sleep(500);
@@ -96,9 +107,76 @@ public class SingleFragment extends Fragment {
         CommentAdapter commentAdapter = new CommentAdapter(getContext(),commentList);
         recyclerView.setAdapter(commentAdapter);
 
+        //fazer Comentario
+        btnComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String txtcomment;
+
+                txtcomment = comment.getText().toString();
+
+                if (txtcomment.isEmpty()||txtcomment.equals(' ')){
+
+                }else {
+                    DatabaseHelper db;
+                    List<User> user = new ArrayList<>();
+                    db = new DatabaseHelper(getContext());
+                    user.addAll(db.getUser());
+                    String userId= user.get(0).getId();
+
+                    requestQueueCommentPost = Volley.newRequestQueue(getContext());
+
+                    volleyRequestComment(userId,id,txtcomment);
+
+
+                }
+
+            }
+        });
+
 
         return root;
     }
+
+    private void volleyRequestComment(final String userId, final int id_Post, final String txtcomment) {
+
+        String url="http://192.168.1.156:8000/api/comment/store";
+
+        StringRequest postRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>()
+                {
+                    @Override
+                    public void onResponse(String response) {
+                        // response
+                        Log.d("Response", response);
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // error
+                        Log.d("Error.Response", String.valueOf(error));
+                    }
+                }
+        ) {
+            @Override
+            protected Map<String, String> getParams()
+            {
+                Map<String, String>  params = new HashMap<String, String>();
+                params.put("comment",txtcomment );
+                params.put("id_post", String.valueOf(id_Post));
+                params.put("id_user", userId);
+
+                return params;
+            }
+        };
+
+        requestQueueCommentPost.add(postRequest);
+
+    }
+
 
     private void makeJsonArrayRequestComment(int id) {
 
@@ -110,10 +188,6 @@ public class SingleFragment extends Fragment {
                     public void onResponse(JSONArray response) {
 
                         try {
-
-
-                            // Parsing json array response
-                            // loop through each json object
 
                             jsonResponse = "";
 
@@ -188,7 +262,8 @@ public class SingleFragment extends Fragment {
                                 txtTitle.setText(id_user);
                                 txtDate.setText(created_at);
                                 txtCaption.setText(caption);
-                                txtRating.setText(rating);
+                                ratingBar.setRating(Integer.parseInt(rating));
+
 
 
                                 Picasso.get().load(path).placeholder(R.drawable.loading).fit().into(ivPost);
@@ -225,10 +300,12 @@ public class SingleFragment extends Fragment {
         txtLocation= root.findViewById(R.id.location_name);
         txtTitle = root.findViewById(R.id.txtTitle);
         txtDate= root.findViewById(R.id.txtLocation);
-        txtRating= root.findViewById(R.id.txtRating);
+        ratingBar= root.findViewById(R.id.txtRating);
         txtCaption= root.findViewById(R.id.txtCaption);
         ivPost = root.findViewById(R.id.imgPost);
         recyclerView = root.findViewById(R.id.recyclerView);
+        comment = root.findViewById(R.id.comment);
+        btnComment=root.findViewById(R.id.btnComment);
     }
 
     @Override

@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -49,7 +50,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
 
         holder.txtBeach_Name.setText(post.getBeach_name());
         holder.txtCaption.setText(post.getCreated_at());
-        holder.txtRating.setText(post.getRating());
+        holder.ratingBar.setRating(Integer.parseInt(post.getRating()));
         holder.txtLocation.setText(post.getLocation_name());
 
         Picasso.get().load(post.getPath()).placeholder(R.drawable.loading).fit().into(holder.imgPost);
@@ -80,8 +81,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 
-        TextView txtBeach_Name,txtRating,txtCaption,txtLocation;
+        TextView txtBeach_Name,txtCaption,txtLocation;
         ImageView imgPost;
+        RatingBar ratingBar;
 
 
         public MyViewHolder(View view) {
@@ -90,8 +92,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
             txtBeach_Name = view.findViewById(R.id.txtTitle);
             txtLocation=view.findViewById(R.id.txtLocation);
             txtCaption = view.findViewById(R.id.txtCaption);
-            txtRating = view.findViewById(R.id.txtRating);
+            ratingBar = view.findViewById(R.id.txtRating);
             imgPost = view.findViewById(R.id.imgPost);
+
         }
     }
 }

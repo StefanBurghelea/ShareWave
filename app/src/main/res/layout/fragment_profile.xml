@@ -46,11 +46,12 @@
         app:fontFamily="@font/arya" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="fill_parent"
+        android:id="@+id/recyclerViewProfile"
+        android:layout_width="match_parent"
         android:layout_height="fill_parent"
         android:layout_gravity="center"
         android:layout_weight="1"
+        android:layout_marginTop="10dp"
         android:scrollbars="vertical" />
 
 </LinearLayout>

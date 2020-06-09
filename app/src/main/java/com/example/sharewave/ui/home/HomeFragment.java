@@ -101,7 +101,7 @@ public class HomeFragment extends Fragment implements SearchView.OnQueryTextList
 
         postList.add(
                 new Post(
-                        1,
+                        50,
                         "https://postadmin.s3.eu-west-3.amazonaws.com/Screenshot_2019-12-20-18-25-22-210_com.instagram.android.jpg",
                         "Muito Bom",
                         "3",
@@ -111,23 +111,8 @@ public class HomeFragment extends Fragment implements SearchView.OnQueryTextList
                         "2020-03-20",
                         "Baleal",
                         "Peniche"
-                        )
-        );
-        postList.add(
-                new Post(
-                        1,
-                        "https://postadmin.s3.eu-west-3.amazonaws.com/Screenshot_2019-12-20-18-25-22-210_com.instagram.android.jpg",
-                        "Muito Bom",
-                        "3",
-                        "340",
-                        "3",
-                        "11",
-                        "2020-03-20",
-                        "Baleal",
-                        "Peniche"
                 )
         );
-
 
         makeJsonArrayRequest();
         try {
