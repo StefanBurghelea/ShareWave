@@ -114,7 +114,7 @@ public class RegisterFragment extends Fragment {
 
     private void register(String name, String email, String firstname, String lastname, String password, String repassword) {
 
-        String URL = "http://192.168.1.156:8000/api/register";
+        String URL = "http://checkwaves.com/api/register";
         try {
             RequestQueue requestQueue = Volley.newRequestQueue(getContext());
             JSONObject jsonBody = new JSONObject();

@@ -128,7 +128,7 @@ public class LoginFragment extends Fragment {
 
     private void login(final String email,final String pass) {
 
-        String URL = "http://192.168.1.156:8000/api/login";
+        String URL = "http://checkwaves.com/api/login";
         try {
             RequestQueue requestQueue = Volley.newRequestQueue(getContext());
             JSONObject jsonBody = new JSONObject();

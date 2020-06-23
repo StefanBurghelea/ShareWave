@@ -48,14 +48,14 @@ public class HomeFragment extends Fragment implements SearchView.OnQueryTextList
     LocationAdapter adapterLocation;
     ArrayList<Location> locationArrayList = new ArrayList<>();
     RequestQueue requestQueueLocations;
-    String urlLocations= "http://192.168.1.156:8000/api/locations/";
+    String urlLocations= "http://checkwaves.com/api/locations/";
 
     //posts
     RecyclerView recyclerView;
     List<Post> postList;
     private String jsonResponse;
     RequestQueue requestQueue;
-    String urlJsonArry = "http://192.168.1.156:8000/api/posts/";
+    String urlJsonArry = "http://checkwaves.com/api/posts/";
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -88,8 +88,6 @@ public class HomeFragment extends Fragment implements SearchView.OnQueryTextList
         editsearch.setOnQueryTextListener(this);
 
 
-
-
         //posts
 
         requestQueue = Volley.newRequestQueue(getContext());
@@ -101,7 +99,7 @@ public class HomeFragment extends Fragment implements SearchView.OnQueryTextList
 
         postList.add(
                 new Post(
-                        50,
+                        5,
                         "https://postadmin.s3.eu-west-3.amazonaws.com/Screenshot_2019-12-20-18-25-22-210_com.instagram.android.jpg",
                         "Muito Bom",
                         "3",
@@ -124,6 +122,8 @@ public class HomeFragment extends Fragment implements SearchView.OnQueryTextList
         PostAdapter adapter = new PostAdapter(getContext(),postList);
 
         recyclerView.setAdapter(adapter);
+
+        adapter.notifyDataSetChanged();
 
         return root;
 
@@ -196,10 +196,6 @@ public class HomeFragment extends Fragment implements SearchView.OnQueryTextList
 
                         try {
 
-
-                            // Parsing json array response
-                            // loop through each json object
-
                             jsonResponse = "";
 
                             for (int i = 0; i < response.length(); i++) {
@@ -250,7 +246,7 @@ public class HomeFragment extends Fragment implements SearchView.OnQueryTextList
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d("Error: " + error.getMessage());
                 Toast.makeText(getContext(),
-                        error.getMessage(), Toast.LENGTH_SHORT).show();
+                        error.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
 

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ShareWave</string>
+    <string name="app_name">CheckWaves</string>
     <string name="title_home">Home</string>
     <string name="title_camera">Capture</string>
     <string name="title_profile">Profile</string>
@@ -10,5 +10,12 @@
     <string name="next">NEXT</string>
     <string name="skip">SKIP</string>
     <string name="start">GOT IT</string>
+
+
+    <string-array name="lista">
+        <item>Baleal</item>
+        <item>Praia da Areia Branca</item>
+        <item>Santa Cruz</item>
+    </string-array>
 
 </resources>

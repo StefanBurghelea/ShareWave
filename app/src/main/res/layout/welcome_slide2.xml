@@ -14,12 +14,12 @@
         <ImageView
             android:layout_width="@dimen/img_width_height"
             android:layout_height="@dimen/img_width_height"
-            android:src="@drawable/logo" />
+            android:src="@drawable/surfar" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="CheckWaves"
+            android:text="Check The Posts"
             android:textColor="@android:color/white"
             android:textSize="@dimen/slide_title"
             android:textStyle="bold" />
@@ -30,7 +30,7 @@
             android:layout_marginTop="20dp"
             android:paddingLeft="@dimen/desc_padding"
             android:paddingRight="@dimen/desc_padding"
-            android:text="Partilha as tuas ondas!"
+            android:text="Comment your opinion"
             android:textAlignment="center"
             android:textColor="@android:color/white"
             android:textSize="@dimen/slide_desc"

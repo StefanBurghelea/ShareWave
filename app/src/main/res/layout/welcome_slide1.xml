@@ -30,7 +30,7 @@
             android:layout_marginTop="20dp"
             android:paddingLeft="@dimen/desc_padding"
             android:paddingRight="@dimen/desc_padding"
-            android:text="Partilha as tuas ondas!"
+            android:text="Share Your Waves"
             android:textAlignment="center"
             android:textColor="@android:color/white"
             android:textSize="@dimen/slide_desc"

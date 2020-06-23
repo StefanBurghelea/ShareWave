@@ -59,4 +59,8 @@ public class Location implements Serializable {
     public void setLongitude(String longitude) {
         this.longitude = longitude;
     }
+
+    public String toString() {
+        return location_name + " - " + beach_name;
+    }
 }

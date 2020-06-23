@@ -93,6 +93,9 @@ public class LocationAdapter extends BaseAdapter {
                 bundle.putInt("id",locationList.get(position).getId());
                 bundle.putString("beach_name",locationList.get(position).getBeach_name());
                 bundle.putString("location_name",locationList.get(position).getLocation_name());
+                bundle.putString("latitude",locationList.get(position).getLatitude());
+                bundle.putString("longitude",locationList.get(position).getLongitude());
+
 
                 AppCompatActivity activity = (AppCompatActivity) v.getContext();
                 SpecificFragment myFragment = new SpecificFragment();

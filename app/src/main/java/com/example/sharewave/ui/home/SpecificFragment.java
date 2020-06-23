@@ -18,11 +18,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.sharewave.R;
 import com.example.sharewave.adapters.PostAdapter;
@@ -34,7 +37,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SpecificFragment extends Fragment {
 
@@ -45,7 +50,13 @@ public class SpecificFragment extends Fragment {
     PostAdapter adapter;
     private String jsonResponse;
     private RequestQueue requestQueue;
-    String beach_name,location_name;
+    String beach_name,location_name,latitude,longitude;
+
+    //forecast
+    TextView height,wind;
+    private String jsonResponseForecast;
+    private RequestQueue requestQueueForecast;
+
 
 
     public static SpecificFragment newInstance() {
@@ -61,11 +72,22 @@ public class SpecificFragment extends Fragment {
         int id = arguments.getInt("id");
         beach_name = arguments.getString("beach_name");
         location_name = arguments.getString("location_name");
+        latitude = arguments.getString("latitude");
+        longitude = arguments.getString("longitude");
 
         declarar(root);
 
         txtBeachName.setText(beach_name);
         txtLocationName.setText(location_name);
+
+        //forecast
+
+        String url ="https://api.stormglass.io/forecast?lat="+latitude+"&lng="+longitude+"&params=waveHeight";
+
+        requestQueueForecast = Volley.newRequestQueue(getContext());
+
+        jsonRequestForecast(url);
+
 
 
         //post
@@ -86,9 +108,86 @@ public class SpecificFragment extends Fragment {
         return root;
     }
 
+    private void jsonRequestForecast(String url) {
+
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET,url,null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                String onda = null,vento = null;
+
+                try {
+
+                    JSONArray hours = response.getJSONArray("hours");
+
+                    for (int i = 0; i < hours.length(); i++) {
+
+                        JSONObject jsonObject = hours.getJSONObject(i);
+
+                        JSONArray waveHeight = jsonObject.getJSONArray("waveHeight");
+
+                        for (int i1 = 0; i1 < waveHeight.length(); i1++) {
+
+                            JSONObject jsonObject1 = hours.getJSONObject(i1);
+
+                            onda = jsonObject1.getString("value");
+
+                            break;
+                        }
+
+                        JSONArray direction = jsonObject.getJSONArray("windDirection");
+
+                        for (int i1 = 0; i1 < direction.length(); i1++) {
+
+                            JSONObject jsonObject1 = hours.getJSONObject(i1);
+
+                            vento = jsonObject1.getString("value");
+
+                            break;
+                        }
+
+
+                        break;
+
+                    }
+
+                    height.setText(onda);
+                    wind.setText(vento);
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getContext(),
+                            "Error: " + e.getMessage(),
+                            Toast.LENGTH_LONG).show();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("erro", "Error: " + error.getMessage());
+                Toast.makeText(getContext(),
+                        error.getMessage(), Toast.LENGTH_SHORT).show();
+
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String>  params = new HashMap<String, String>();
+                params.put("Authorization", "e239ec18-b4e3-11ea-9409-0242ac130002-e239ed44-b4e3-11ea-9409-0242ac130002");
+
+                return params;
+            }
+        };
+
+        requestQueueForecast.add(req);
+
+    }
+
     private void makeJsonArrayRequest(int id, final List<Post> postList) {
 
-        String urlJsonArry = "http://192.168.1.156:8000/api/posts/location/"+id;
+        String urlJsonArry = "http://checkwaves.com/api/posts/location/"+id;
 
 
         JsonArrayRequest req = new JsonArrayRequest(urlJsonArry,
@@ -129,7 +228,6 @@ public class SpecificFragment extends Fragment {
                                         )
                                 );
 
-                                Log.d("entrou","true");
                                 adapter.notifyDataSetChanged();
                             }
 
@@ -160,6 +258,8 @@ public class SpecificFragment extends Fragment {
         recyclerView = root.findViewById(R.id.recyclerView);
         txtBeachName = root.findViewById(R.id.beach_name);
         txtLocationName = root.findViewById(R.id.location_name);
+        height = root.findViewById(R.id.waveHeight);
+        wind = root.findViewById(R.id.wind);
 
     }
 

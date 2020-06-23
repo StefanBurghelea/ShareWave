@@ -127,7 +127,7 @@ public class ProfileFragment extends Fragment {
 
     private void makeJsonArrayRequest() {
         String id= user.get(0).getId();
-        String url = "http://192.168.1.156:8000/api/post/userPosts/"+id;
+        String url = "http://checkwaves.com/api/post/userPosts/"+id;
 
         JsonArrayRequest req = new JsonArrayRequest(url,
                 new Response.Listener<JSONArray>() {

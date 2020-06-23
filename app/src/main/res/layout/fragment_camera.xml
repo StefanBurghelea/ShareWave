@@ -22,12 +22,13 @@
         app:srcCompat="@android:color/darker_gray" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName"
+        android:id="@+id/imageCaption"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
-        android:hint="Caption" />
+        android:hint="Caption"
+        android:layout_marginTop="30dp"/>
 
     <RatingBar
         android:id="@+id/ratingBar"
@@ -38,12 +39,26 @@
         android:numStars="5"
         android:rating="2"
         android:saveEnabled="true"
-        android:stepSize="1" />
+        android:stepSize="1"
+        android:layout_marginTop="30dp"/>
 
-    <Spinner
+    <androidx.appcompat.widget.AppCompatSpinner
         android:id="@+id/spinner"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="70dp"
+        android:layout_marginTop="30dp"
+        android:background="@color/cardview_light_background"
+        android:entries="@array/lista" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:clickable="true"
+        android:foregroundGravity="center"
+        app:srcCompat="@android:drawable/ic_menu_send" />
 
 
 </LinearLayout>

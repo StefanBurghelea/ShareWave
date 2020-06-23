@@ -141,7 +141,8 @@
         android:scrollbars="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/materialCardView2" />
+        app:layout_constraintTop_toBottomOf="@+id/materialCardView2"
+        app:layout_constraintBottom_toTopOf="@+id/comment"/>
 
     <EditText
         android:id="@+id/comment"
@@ -150,18 +151,20 @@
         android:ems="10"
         android:gravity="start|top"
         android:inputType="textMultiLine"
+        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toStartOf="@+id/btnComment"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/recyclerView" />
 
     <ImageButton
         android:id="@+id/btnComment"
-        android:layout_width="61dp"
-        android:layout_height="59dp"
+        android:layout_width="72dp"
+        android:layout_height="47dp"
         android:src="@android:drawable/ic_menu_send"
+        android:backgroundTint="@color/color900"
+        app:layout_constraintBottom_toBottomOf="@+id/comment"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recyclerView" />
+        app:layout_constraintTop_toTopOf="@+id/comment" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

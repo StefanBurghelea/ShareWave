@@ -19,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import es.dmoral.toasty.Toasty;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -47,10 +48,12 @@ import java.util.Map;
 
 public class SingleFragment extends Fragment {
 
-    //comment
+
     TextView txtBeach,txtLocation,txtTitle,txtDate,txtCaption;
     RatingBar ratingBar;
     ImageView ivPost;
+
+    //comment
     EditText comment;
     ImageButton btnComment;
     private String jsonResponse;
@@ -98,14 +101,7 @@ public class SingleFragment extends Fragment {
         commentList = new ArrayList<>();
 
         makeJsonArrayRequestComment(id);
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
 
-        CommentAdapter commentAdapter = new CommentAdapter(getContext(),commentList);
-        recyclerView.setAdapter(commentAdapter);
 
         //fazer Comentario
         btnComment.setOnClickListener(new View.OnClickListener() {
@@ -118,6 +114,8 @@ public class SingleFragment extends Fragment {
 
                 if (txtcomment.isEmpty()||txtcomment.equals(' ')){
 
+                    Toasty.error(getContext(), "Insert Something", Toast.LENGTH_LONG, true).show();
+
                 }else {
                     DatabaseHelper db;
                     List<User> user = new ArrayList<>();
@@ -129,11 +127,17 @@ public class SingleFragment extends Fragment {
 
                     volleyRequestComment(userId,id,txtcomment);
 
+                    comment.setText("");
+
 
                 }
 
             }
         });
+
+        CommentAdapter commentAdapter = new CommentAdapter(getContext(),commentList);
+        recyclerView.setAdapter(commentAdapter);
+        commentAdapter.notifyDataSetChanged();
 
 
         return root;
@@ -141,7 +145,7 @@ public class SingleFragment extends Fragment {
 
     private void volleyRequestComment(final String userId, final int id_Post, final String txtcomment) {
 
-        String url="http://192.168.1.156:8000/api/comment/store";
+        String url="http://checkwaves.com/api/comment/store";
 
         StringRequest postRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>()
@@ -180,7 +184,7 @@ public class SingleFragment extends Fragment {
 
     private void makeJsonArrayRequestComment(int id) {
 
-        String url = "http://192.168.1.156:8000/api/comments/post/"+id;
+        String url = "http://checkwaves.com/api/comments/post/"+id;
 
         JsonArrayRequest req = new JsonArrayRequest(url,
                 new Response.Listener<JSONArray>() {
@@ -211,6 +215,8 @@ public class SingleFragment extends Fragment {
                                         )
                                 );
 
+                                Log.d("comentario",comment);
+
                             }
 
                         } catch (JSONException e) {
@@ -231,14 +237,17 @@ public class SingleFragment extends Fragment {
             }
         });
 
+
         // Adding request to request queue
         requestQueueComment.add(req);
+
+
 
     }
 
     private void makeJsonArrayRequest(int id) {
 
-        String urlJson = "http://192.168.1.156:8000/api/posts/"+id;
+        String urlJson = "http://checkwaves.com/api/posts/"+id;
 
         JsonObjectRequest req = new JsonObjectRequest(urlJson,null,
                 new Response.Listener<JSONObject>() {
