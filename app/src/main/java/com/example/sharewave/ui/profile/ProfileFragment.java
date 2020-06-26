@@ -55,6 +55,7 @@ public class ProfileFragment extends Fragment {
     private String jsonResponse;
     List<Post> postList;
 
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         notificationsViewModel =
@@ -91,32 +92,18 @@ public class ProfileFragment extends Fragment {
         recyclerView.setLayoutManager(recyclerviewLayout);
 
         postList= new ArrayList<>();
-        postList.add(
-                new Post(
-                        1,
-                        "https://postadmin.s3.eu-west-3.amazonaws.com/Screenshot_2019-12-20-18-25-22-210_com.instagram.android.jpg",
-                        "Muito Bom",
-                        "3",
-                        "340",
-                        "1",
-                        "11",
-                        "2020-03-20",
-                        "Baleal",
-                        "Peniche"
-                )
-        );
 
-        makeJsonArrayRequest();
+
+        makeJsonArrayRequest(postList);
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        if (postList.size()==0){
-            Toasty.error(getContext(), "Nenhuma imagem publicada :(", Toast.LENGTH_SHORT, true).show();
-        }
-        ProfileAdapter profileAdapter = new ProfileAdapter(getContext(),postList);
+
+
+        profileAdapter = new ProfileAdapter(getContext(),postList);
         recyclerView.setAdapter(profileAdapter);
 
 
@@ -125,7 +112,7 @@ public class ProfileFragment extends Fragment {
         return root;
     }
 
-    private void makeJsonArrayRequest() {
+    private void makeJsonArrayRequest(final List<Post> postList) {
         String id= user.get(0).getId();
         String url = "http://checkwaves.com/api/post/userPosts/"+id;
 
@@ -171,6 +158,13 @@ public class ProfileFragment extends Fragment {
                                                 null
                                         )
                                 );
+
+                                if (postList.size()<=0){
+
+                                    Toasty.error(getContext(), "Nenhuma imagem publicada :(", Toast.LENGTH_SHORT, true).show();
+                                }
+
+                                profileAdapter.notifyDataSetChanged();
 
 
 

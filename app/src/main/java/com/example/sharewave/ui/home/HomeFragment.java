@@ -36,7 +36,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class HomeFragment extends Fragment implements SearchView.OnQueryTextListener {
@@ -56,7 +55,7 @@ public class HomeFragment extends Fragment implements SearchView.OnQueryTextList
     private String jsonResponse;
     RequestQueue requestQueue;
     String urlJsonArry = "http://checkwaves.com/api/posts/";
-
+    PostAdapter adapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -97,7 +96,7 @@ public class HomeFragment extends Fragment implements SearchView.OnQueryTextList
 
         postList = new ArrayList<>();
 
-        postList.add(
+        /*postList.add(
                 new Post(
                         5,
                         "https://postadmin.s3.eu-west-3.amazonaws.com/Screenshot_2019-12-20-18-25-22-210_com.instagram.android.jpg",
@@ -110,16 +109,16 @@ public class HomeFragment extends Fragment implements SearchView.OnQueryTextList
                         "Baleal",
                         "Peniche"
                 )
-        );
+        );*/
 
-        makeJsonArrayRequest();
+        makeJsonArrayRequest(postList);
         try {
             Thread.sleep(300);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        PostAdapter adapter = new PostAdapter(getContext(),postList);
+        adapter = new PostAdapter(getContext(),postList);
 
         recyclerView.setAdapter(adapter);
 
@@ -187,7 +186,7 @@ public class HomeFragment extends Fragment implements SearchView.OnQueryTextList
     }
 
     //posts
-    private void makeJsonArrayRequest() {
+    private void makeJsonArrayRequest(final List<Post> postList) {
 
         JsonArrayRequest req = new JsonArrayRequest(urlJsonArry,
                 new Response.Listener<JSONArray>() {
@@ -229,6 +228,10 @@ public class HomeFragment extends Fragment implements SearchView.OnQueryTextList
                                                 locationn
                                         )
                                 );
+
+                                adapter.notifyDataSetChanged();
+
+
 
                             }
 

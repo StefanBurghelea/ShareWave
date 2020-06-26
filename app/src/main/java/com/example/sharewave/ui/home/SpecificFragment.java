@@ -82,7 +82,7 @@ public class SpecificFragment extends Fragment {
 
         //forecast
 
-        String url ="https://api.stormglass.io/forecast?lat="+latitude+"&lng="+longitude+"&params=waveHeight";
+        String url ="https://api.stormglass.io/forecast?lat=+"+latitude+"&lng="+longitude+"&params=waveHeight,windDirection&source=sg";
 
         requestQueueForecast = Volley.newRequestQueue(getContext());
 
@@ -113,52 +113,56 @@ public class SpecificFragment extends Fragment {
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET,url,null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                String onda = null,vento = null;
+                String onda = null;
 
                 try {
 
-                    JSONArray hours = response.getJSONArray("hours");
+                    JSONArray jsonArray = response.getJSONArray("hours");
 
-                    for (int i = 0; i < hours.length(); i++) {
+                    //para as horas
+                    for(int i = 0; i<jsonArray.length(); i++)
+                    {
+                        JSONObject jsonObject = jsonArray .getJSONObject(i);
 
-                        JSONObject jsonObject = hours.getJSONObject(i);
+                        JSONArray waves = jsonObject.getJSONArray("waveHeight");
 
-                        JSONArray waveHeight = jsonObject.getJSONArray("waveHeight");
+                        for(int j=0; j<waves.length(); j++)
+                        {
+                            JSONObject wavesEntrada = waves.getJSONObject(i);
 
-                        for (int i1 = 0; i1 < waveHeight.length(); i1++) {
+                            onda = String.valueOf(wavesEntrada.getDouble("value"));
 
-                            JSONObject jsonObject1 = hours.getJSONObject(i1);
+                            height.setText(onda + " M");
 
-                            onda = jsonObject1.getString("value");
-
-                            break;
                         }
 
-                        JSONArray direction = jsonObject.getJSONArray("windDirection");
+                        JSONArray ventos = jsonObject.getJSONArray("windDirection");
 
-                        for (int i1 = 0; i1 < direction.length(); i1++) {
+                        for(int j=0; j<ventos.length(); j++)
+                        {
+                            JSONObject ventoEntrada = ventos.getJSONObject(i);
 
-                            JSONObject jsonObject1 = hours.getJSONObject(i1);
+                            Double direcao = ventoEntrada.getDouble("value");
 
-                            vento = jsonObject1.getString("value");
+                            if (direcao >=0 && direcao<=90){
+                                wind.setText("North");
+                            }else if (direcao >90 && direcao<=180){
+                                wind.setText("East");
+                            }else if (direcao >180 && direcao<=270){
+                                wind.setText("South");
+                            }else wind.setText("West");
 
-                            break;
+
                         }
 
-
-                        break;
 
                     }
-
-                    height.setText(onda);
-                    wind.setText(vento);
 
 
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(getContext(),
-                            "Error: " + e.getMessage(),
-                            Toast.LENGTH_LONG).show();
+                    Log.d(
+                            "Error: " , e.getMessage());
                 }
 
             }
@@ -167,8 +171,7 @@ public class SpecificFragment extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d("erro", "Error: " + error.getMessage());
-                Toast.makeText(getContext(),
-                        error.getMessage(), Toast.LENGTH_SHORT).show();
+
 
             }
         }){

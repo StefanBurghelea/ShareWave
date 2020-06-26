@@ -87,7 +87,6 @@ public class LocationAdapter extends BaseAdapter {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(v.getContext(),  locationList.get(position).getBeach_name()+ " - "+ locationList.get(position).getLocation_name(),Toast.LENGTH_LONG).show();
 
                 Bundle bundle = new Bundle();
                 bundle.putInt("id",locationList.get(position).getId());

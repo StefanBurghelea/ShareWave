@@ -2,6 +2,8 @@ package com.example.sharewave.ui.single;
 
 import androidx.lifecycle.ViewModelProviders;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,6 +36,7 @@ import com.example.sharewave.R;
 import com.example.sharewave.adapters.CommentAdapter;
 import com.example.sharewave.auth.DatabaseHelper;
 import com.example.sharewave.classes.Comment;
+import com.example.sharewave.classes.Post;
 import com.example.sharewave.classes.User;
 import com.squareup.picasso.Picasso;
 
@@ -45,6 +48,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
 
 public class SingleFragment extends Fragment {
 
@@ -52,6 +56,12 @@ public class SingleFragment extends Fragment {
     TextView txtBeach,txtLocation,txtTitle,txtDate,txtCaption;
     RatingBar ratingBar;
     ImageView ivPost;
+
+    //users
+    private String jsonResponseUser;
+    RequestQueue requestQueueUser;
+    String urlUser = "http://checkwaves.com/api/users/";
+    List<User> usersList;
 
     //comment
     EditText comment;
@@ -63,6 +73,7 @@ public class SingleFragment extends Fragment {
     RecyclerView recyclerView;
     List<Comment> commentList;
     RequestQueue requestQueueComment;
+    CommentAdapter commentAdapter;
 
     //postComment
     RequestQueue requestQueueCommentPost;
@@ -85,6 +96,18 @@ public class SingleFragment extends Fragment {
         String location = arguments.getString("location");
 
         declarar(root);
+        //receber lista de utilizadores
+        requestQueueUser = Volley.newRequestQueue(getContext());
+
+        usersList = new ArrayList<>();
+
+        jsonReceberUsers();
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         //posts
         txtBeach.setText(beach);
         txtLocation.setText(location);
@@ -100,7 +123,7 @@ public class SingleFragment extends Fragment {
 
         commentList = new ArrayList<>();
 
-        makeJsonArrayRequestComment(id);
+        makeJsonArrayRequestComment(id,commentList);
 
 
         //fazer Comentario
@@ -117,6 +140,7 @@ public class SingleFragment extends Fragment {
                     Toasty.error(getContext(), "Insert Something", Toast.LENGTH_LONG, true).show();
 
                 }else {
+
                     DatabaseHelper db;
                     List<User> user = new ArrayList<>();
                     db = new DatabaseHelper(getContext());
@@ -129,18 +153,89 @@ public class SingleFragment extends Fragment {
 
                     comment.setText("");
 
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    Toasty.success(getContext(), "Sent! :)", Toast.LENGTH_SHORT, true).show();
+
+                    commentList.clear();
+                    makeJsonArrayRequestComment(id,commentList);
+                    commentAdapter.notifyDataSetChanged();
+
 
                 }
 
             }
         });
 
-        CommentAdapter commentAdapter = new CommentAdapter(getContext(),commentList);
+        commentAdapter = new CommentAdapter(getContext(),commentList);
         recyclerView.setAdapter(commentAdapter);
         commentAdapter.notifyDataSetChanged();
 
 
         return root;
+    }
+
+    private void jsonReceberUsers() {
+
+        JsonArrayRequest req = new JsonArrayRequest(urlUser,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+
+                        try {
+
+                            jsonResponse = "";
+
+                            for (int i = 0; i < response.length(); i++) {
+
+                                JSONObject person = (JSONObject) response
+                                        .get(i);
+
+                                int id = Integer.parseInt(person.getString("id"));
+                                String name = person.getString("name");
+                                String email = person.getString("email");
+                                String firstname = person.getString("firstname");
+                                String lastname = person.getString("lastname");
+
+                                String sid = String.valueOf(id);
+
+                                usersList.add(
+                                        new User(
+                                                sid,
+                                                name,
+                                                email,
+                                                firstname,
+                                                lastname
+                                        )
+                                );
+
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(getContext(),
+                                    "Error: " + e.getMessage(),
+                                    Toast.LENGTH_LONG).show();
+                        }
+
+                    }
+
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("Error: " + error.getMessage());
+                Toast.makeText(getContext(),
+                        error.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+
+        // Adding request to request queue
+        requestQueueUser.add(req);
+
     }
 
     private void volleyRequestComment(final String userId, final int id_Post, final String txtcomment) {
@@ -182,7 +277,7 @@ public class SingleFragment extends Fragment {
     }
 
 
-    private void makeJsonArrayRequestComment(int id) {
+    private void makeJsonArrayRequestComment(int id, final List<Comment> commentList) {
 
         String url = "http://checkwaves.com/api/comments/post/"+id;
 
@@ -192,6 +287,7 @@ public class SingleFragment extends Fragment {
                     public void onResponse(JSONArray response) {
 
                         try {
+                            String nome = null;
 
                             jsonResponse = "";
 
@@ -205,17 +301,32 @@ public class SingleFragment extends Fragment {
                                 String id_post = person.getString("id_post");
                                 String id_user = person.getString("id_user");
 
+                                for (int i1 = 0 ; i1<usersList.size();i1++)
+                                {
+                                    String user1 = usersList.get(i1).getId();
+
+                                    if (user1.equals(id_user)){
+
+                                        nome = usersList.get(i1).getUsername();
+                                        
+                                    }
+
+                                }
 
                                 commentList.add(
                                         new Comment(
                                                 id,
                                                 comment,
                                                 id_post,
-                                                id_user
+                                                nome
+                                                
                                         )
                                 );
 
                                 Log.d("comentario",comment);
+                                commentAdapter.notifyDataSetChanged();
+
+
 
                             }
 
@@ -256,6 +367,8 @@ public class SingleFragment extends Fragment {
 
                         try {
 
+                            String nome = null;
+
                             jsonResponse = "";
 
 
@@ -267,11 +380,25 @@ public class SingleFragment extends Fragment {
                                 String id_user = response.getString("id_user");
                                 String id_location = response.getString("id_location");
                                 String created_at = response.getString("created_at");
+                                
+                                for (int i1 = 0 ; i1<usersList.size();i1++)
+                                {
+                                    String user1 = usersList.get(i1).getId();
+    
+                                    if (user1.equals(id_user)){
+    
+                                        nome = usersList.get(i1).getUsername();
 
-                                txtTitle.setText(id_user);
+                                    }
+    
+                                }
+
+                                txtTitle.setText(nome);
                                 txtDate.setText(created_at);
                                 txtCaption.setText(caption);
                                 ratingBar.setRating(Integer.parseInt(rating));
+
+                            
 
 
 

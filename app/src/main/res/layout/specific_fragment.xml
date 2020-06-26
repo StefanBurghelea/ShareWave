@@ -57,7 +57,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="4 metros"
+            android:text="No data"
             android:gravity="center"/>
 
         <TextView
@@ -65,7 +65,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="N"
+            android:text="No data"
             android:gravity="center"/>
 
     </LinearLayout>
